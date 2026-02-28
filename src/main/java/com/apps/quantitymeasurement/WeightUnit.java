@@ -1,10 +1,10 @@
 package com.apps.quantitymeasurement;
 
-public enum WeightUnit {
+public enum WeightUnit implements IMeasurable{
 
     KILOGRAM(1.0),
     GRAM(0.001),
-    POUND(0.45359237);
+    POUND(0.453592);
 
     private final double conversionFactor;
 
@@ -12,13 +12,21 @@ public enum WeightUnit {
         this.conversionFactor = conversionFactor;
     }
 
-    // NO rounding here
-    public double convertToBaseUnit(double value) {
-        return value * conversionFactor;
+    public double getConversionFactor() {
+        return conversionFactor;
     }
 
-    // NO rounding here
+    public double convertToBaseUnit(double value) {
+        double result = value * conversionFactor;
+        return Math.round(result * 100.0) / 100.0;
+    }
+
     public double convertFromBaseUnit(double baseValue) {
-        return baseValue / conversionFactor;
+        double result = baseValue / conversionFactor;
+        return Math.round(result * 100.0) / 100.0;
+    }
+    
+    public String getUnitName() {
+    	return this.name();
     }
 }
