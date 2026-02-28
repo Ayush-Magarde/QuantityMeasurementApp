@@ -2,143 +2,59 @@ package com.apps.quantitymeasurement;
 
 public class QuantityMeasurementApp {
 
-    // Static method to demonstrate Length equality
-    public static boolean demonstrateLengthEquality(Length l1, Length l2) {
-        return l1.equals(l2);
-    }
+	public static boolean demonstrateLengthEquality(Length l1, Length l2) {
+		return l1.equals(l2);
+	}
 
-    // Static method to demonstrate extended unit comparisons
-    public static boolean demonstrateLengthComparison(double value1, LengthUnit unit1,
-                                                      double value2, LengthUnit unit2) {
-        Length l1 = new Length(value1, unit1);
-        Length l2 = new Length(value2, unit2);
-        boolean result = l1.equals(l2);
-        System.out.println(l1 + " == " + l2 + " ? " + result);
-        return result;
-    }
+	public static boolean demonstrateLengthComparison(double value1, LengthUnit unit1, double value2,
+			LengthUnit unit2) {
 
-    // Static method to demonstrate conversion using raw values
-    public static Length demonstrateLengthConversion(double value, LengthUnit fromUnit,
-                                                     LengthUnit toUnit) {
-        Length source = new Length(value, fromUnit);
-        Length converted = source.convertTo(toUnit);
-        System.out.println(source + " -> " + converted);
-        return converted;
-    }
+		Length l1 = new Length(value1, unit1);
+		Length l2 = new Length(value2, unit2);
 
-    // Static method to demonstrate conversion using an existing Length object
-    public static Length demonstrateLengthConversion(Length length, LengthUnit toUnit) {
-        Length converted = length.convertTo(toUnit);
-        System.out.println(length + " -> " + converted);
-        return converted;
-    }
+		boolean result = l1.equals(l2);
 
-    // Static method to demonstrate addition of two Length objects
-    public static Length demonstrateLengthAddition(Length length1, Length length2) {
-        Length sum = length1.add(length2);
-        System.out.println(length1 + " + " + length2 + " = " + sum);
-        return sum;
-    }
+		System.out.println("lengths are equal : " + result);
+		return result;
+	}
 
-    // Static method to demonstrate addition of two Length objects into target unit
-    public static Length demonstrateLengthAddition(Length length1, Length length2, LengthUnit targetUnit) {
-        Length sum = length1.add(length2, targetUnit);
-        System.out.println(length1 + " + " + length2 + " in " + targetUnit + " = " + sum);
-        return sum;
-    }
+	public static double demonstrateLengthConversion(double value, LengthUnit from, LengthUnit to) {
 
-    // Main method
-    public static void main(String[] args) {
+		double result = Length.convert(value, from, to);
 
-        demonstrateLengthComparison(1.0, LengthUnit.FEET, 12.0, LengthUnit.INCHES);
-        demonstrateLengthComparison(1.0, LengthUnit.YARDS, 36.0, LengthUnit.INCHES);
-        demonstrateLengthComparison(100.0, LengthUnit.CENTIMETERS, 39.3701, LengthUnit.INCHES);
-        demonstrateLengthComparison(3.0, LengthUnit.FEET, 1.0, LengthUnit.YARDS);
-        demonstrateLengthComparison(30.48, LengthUnit.CENTIMETERS, 1.0, LengthUnit.FEET);
+		System.out.println(value + " " + from + " = " + result + " " + to);
 
-        demonstrateLengthConversion(1.0, LengthUnit.FEET, LengthUnit.INCHES);
-        demonstrateLengthConversion(3.0, LengthUnit.YARDS, LengthUnit.FEET);
-        demonstrateLengthConversion(36.0, LengthUnit.INCHES, LengthUnit.YARDS);
-        demonstrateLengthConversion(30.48, LengthUnit.CENTIMETERS, LengthUnit.FEET);
+		return result;
+	}
 
-        demonstrateLengthConversion(new Length(-1.0, LengthUnit.FEET), LengthUnit.INCHES);
+	public static Length demonstrateLengthAddition(Length l1, Length l2) {
 
-        demonstrateLengthAddition(
-                new Length(1.0, LengthUnit.FEET),
-                new Length(12.0, LengthUnit.INCHES)
-        );
+		Length result = l1.add(l2);
 
-        demonstrateLengthAddition(
-                new Length(12.0, LengthUnit.INCHES),
-                new Length(1.0, LengthUnit.FEET)
-        );
+		System.out.println("Addition : " + result);
 
-        demonstrateLengthAddition(
-                new Length(1.0, LengthUnit.YARDS),
-                new Length(3.0, LengthUnit.FEET)
-        );
+		return result;
+	}
 
-        demonstrateLengthAddition(
-                new Length(2.54, LengthUnit.CENTIMETERS),
-                new Length(1.0, LengthUnit.INCHES)
-        );
+	public static Length demonstrateLengthAddition(Length l1, Length l2, LengthUnit targetUnit) {
 
-        demonstrateLengthAddition(
-                new Length(5.0, LengthUnit.FEET),
-                new Length(0.0, LengthUnit.INCHES)
-        );
+		Length result = l1.add(l2, targetUnit);
 
-        demonstrateLengthAddition(
-                new Length(5.0, LengthUnit.FEET),
-                new Length(-2.0, LengthUnit.FEET)
-        );
+		System.out.println("Addition : " + result);
 
-        demonstrateLengthAddition(
-                new Length(1.0, LengthUnit.FEET),
-                new Length(12.0, LengthUnit.INCHES),
-                LengthUnit.FEET
-        );
+		return result;
+	}
 
-        demonstrateLengthAddition(
-                new Length(1.0, LengthUnit.FEET),
-                new Length(12.0, LengthUnit.INCHES),
-                LengthUnit.INCHES
-        );
-
-        demonstrateLengthAddition(
-                new Length(1.0, LengthUnit.FEET),
-                new Length(12.0, LengthUnit.INCHES),
-                LengthUnit.YARDS
-        );
-
-        demonstrateLengthAddition(
-                new Length(1.0, LengthUnit.YARDS),
-                new Length(3.0, LengthUnit.FEET),
-                LengthUnit.YARDS
-        );
-
-        demonstrateLengthAddition(
-                new Length(36.0, LengthUnit.INCHES),
-                new Length(1.0, LengthUnit.YARDS),
-                LengthUnit.FEET
-        );
-
-        demonstrateLengthAddition(
-                new Length(2.54, LengthUnit.CENTIMETERS),
-                new Length(1.0, LengthUnit.INCHES),
-                LengthUnit.CENTIMETERS
-        );
-
-        demonstrateLengthAddition(
-                new Length(5.0, LengthUnit.FEET),
-                new Length(0.0, LengthUnit.INCHES),
-                LengthUnit.YARDS
-        );
-
-        demonstrateLengthAddition(
-                new Length(5.0, LengthUnit.FEET),
-                new Length(-2.0, LengthUnit.FEET),
-                LengthUnit.INCHES
-        );
-    }
+	public static void main(String[] args) {
+		demonstrateLengthComparison(1.0, LengthUnit.FEET, 12.0, LengthUnit.INCHES);
+		demonstrateLengthComparison(1.0, LengthUnit.YARDS, 3.0, LengthUnit.FEET);
+		demonstrateLengthComparison(1.0, LengthUnit.YARDS, 36.0, LengthUnit.INCHES);
+		demonstrateLengthComparison(1.0, LengthUnit.CENTIMETERS, 0.393701, LengthUnit.INCHES);
+		demonstrateLengthComparison(2.0, LengthUnit.YARDS, 6.0, LengthUnit.FEET);
+		demonstrateLengthConversion(1.0, LengthUnit.FEET, LengthUnit.INCHES);
+		demonstrateLengthConversion(3.0, LengthUnit.YARDS, LengthUnit.FEET);
+		demonstrateLengthConversion(2.54, LengthUnit.CENTIMETERS, LengthUnit.INCHES);
+		demonstrateLengthAddition(new Length(1.0, LengthUnit.FEET), new Length(12.0, LengthUnit.INCHES));		
+		demonstrateLengthAddition(new Length(1.0, LengthUnit.FEET), new Length(12.0, LengthUnit.INCHES), LengthUnit.YARDS);
+	}
 }
