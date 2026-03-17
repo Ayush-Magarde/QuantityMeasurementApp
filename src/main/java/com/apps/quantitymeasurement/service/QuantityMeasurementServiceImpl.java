@@ -13,38 +13,38 @@ public class QuantityMeasurementServiceImpl implements IQuantityMeasurementServi
     }
 
     // Convert DTO → Core Quantity
-    private Quantity<IMeasurable> toQuantity(QuantityDTO dto) {
+	private Quantity<IMeasurable> toQuantity(QuantityDTO dto) {
+	
+	    IMeasurable unit = getCoreUnit(dto.unit);
+	
+	    return new Quantity<>(dto.value, unit);
+	}
+	
+	// Convert DTO Unit → Core Unit
+	private IMeasurable getCoreUnit(QuantityDTO.IMeasurableUnit dtoUnit) {
+	
+	    String name = dtoUnit.getUnitName();
+	
+	    for (LengthUnit u : LengthUnit.values())
+	        if (u.getUnitName().equalsIgnoreCase(name))
+	            return u;
+	
+	    for (WeightUnit u : WeightUnit.values())
+	        if (u.getUnitName().equalsIgnoreCase(name))
+	            return u;
+	
+	    for (VolumeUnit u : VolumeUnit.values())
+	        if (u.getUnitName().equalsIgnoreCase(name))
+	            return u;
+	
+	    for (TemperatureUnit u : TemperatureUnit.values())
+	        if (u.getUnitName().equalsIgnoreCase(name))
+	            return u;
+	
+	    throw new IllegalArgumentException("Invalid unit: " + name);
+	}
 
-        IMeasurable unit = getCoreUnit(dto.unit);
-
-        return new Quantity<>(dto.value, unit);
-    }
-
-    // Convert DTO Unit → Core Unit
-    private IMeasurable getCoreUnit(QuantityDTO.IMeasurableUnit dtoUnit) {
-
-        String name = dtoUnit.getUnitName();
-
-        for (LengthUnit u : LengthUnit.values())
-            if (u.getUnitName().equalsIgnoreCase(name))
-                return u;
-
-        for (WeightUnit u : WeightUnit.values())
-            if (u.getUnitName().equalsIgnoreCase(name))
-                return u;
-
-        for (VolumeUnit u : VolumeUnit.values())
-            if (u.getUnitName().equalsIgnoreCase(name))
-                return u;
-
-        for (TemperatureUnit u : TemperatureUnit.values())
-            if (u.getUnitName().equalsIgnoreCase(name))
-                return u;
-
-        throw new IllegalArgumentException("Invalid unit: " + name);
-    }
-
-    // Convert core Quantity → DTO
+	// Convert core Quantity → DTO
     private QuantityDTO toDTO(Quantity<IMeasurable> quantity) {
 
         return new QuantityDTO(
@@ -84,9 +84,19 @@ public class QuantityMeasurementServiceImpl implements IQuantityMeasurementServi
 
         Quantity<IMeasurable> result = quantity1.add(quantity2);
 
+        QuantityMeasurementEntity entity =
+                new QuantityMeasurementEntity(
+                        new QuantityModel<>(quantity1.getValue(), quantity1.getUnit()),
+                        new QuantityModel<>(quantity2.getValue(), quantity2.getUnit()),
+                        "ADD",
+                        new QuantityModel<>(result.getValue(), result.getUnit())
+                );
+
+        repository.saveMeasurement(entity);
+
         return new QuantityDTO(result.getValue(), q1.unit);
     }
-
+    
     @Override
     public QuantityDTO subtract(QuantityDTO q1, QuantityDTO q2) {
 
@@ -94,6 +104,16 @@ public class QuantityMeasurementServiceImpl implements IQuantityMeasurementServi
         Quantity<IMeasurable> quantity2 = toQuantity(q2);
 
         Quantity<IMeasurable> result = quantity1.subtract(quantity2);
+
+        QuantityMeasurementEntity entity =
+                new QuantityMeasurementEntity(
+                        new QuantityModel<>(quantity1.getValue(), quantity1.getUnit()),
+                        new QuantityModel<>(quantity2.getValue(), quantity2.getUnit()),
+                        "SUBTRACT",
+                        new QuantityModel<>(result.getValue(), result.getUnit())
+                );
+
+        repository.saveMeasurement(entity);
 
         return new QuantityDTO(result.getValue(), q1.unit);
     }
@@ -104,6 +124,19 @@ public class QuantityMeasurementServiceImpl implements IQuantityMeasurementServi
         Quantity<IMeasurable> quantity1 = toQuantity(q1);
         Quantity<IMeasurable> quantity2 = toQuantity(q2);
 
-        return quantity1.divide(quantity2);
+        double result = quantity1.divide(quantity2);
+
+        QuantityMeasurementEntity entity =
+                new QuantityMeasurementEntity(
+                        new QuantityModel<>(quantity1.getValue(), quantity1.getUnit()),
+                        new QuantityModel<>(quantity2.getValue(), quantity2.getUnit()),
+                        "DIVIDE",
+                        String.valueOf(result)
+                );
+
+        repository.saveMeasurement(entity);
+
+        return result;
     }
+    
 }
