@@ -7,11 +7,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+	@ExceptionHandler(ResponseStatusException.class)
+	public ResponseEntity<ErrorResponses> handleResponseStatusException(ResponseStatusException e, HttpServletRequest request){
+		ErrorResponses errro = new ErrorResponses();
+		HttpStatus status = HttpStatus.valueOf(e.getStatusCode().value());
+		errro.setDateTime(LocalDateTime.now());
+		errro.setStatus(status.value());
+		errro.setError(status.getReasonPhrase());
+		errro.setMessage(e.getReason());
+		errro.setPath(request.getRequestURL().toString());
+		return ResponseEntity.status(status).body(errro);
+	}
 	
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<ErrorResponses> handleRunTimeException(RuntimeException e, HttpServletRequest request){
